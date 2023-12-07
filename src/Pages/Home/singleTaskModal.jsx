@@ -1,5 +1,4 @@
 import {useState} from "react";
-import Modal from "./Modal";
 
 export default function SingleTaskModal() {
     const [open, setOpen] = useState(false);
@@ -13,27 +12,8 @@ export default function SingleTaskModal() {
     };
 
     return (
-        <div
-            style={{
-                textAlign: "center",
-                display: "block",
-                padding: 30,
-                margin: "auto",
-            }}
-        >
-            <h1 style={{ color: "green" }}>
-                GeeksforGeeks
-            </h1>
-            <h4>Modal Component in ReactJS?</h4>
-            <button type="button" onClick={handleOpen}>
-                Click Me to Open Modal
-            </button>
-            <Modal isOpen={open} onClose={handleClose}>
-                <>
-                    <h1>GFG</h1>
-                    <h3>A computer science portal!</h3>
-                </>
-            </Modal>
+        <div>
+            <p>I am a modal</p>
         </div>
     );
 }
