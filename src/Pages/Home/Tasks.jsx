@@ -13,14 +13,17 @@ export default function Tasks({data}) {
 
   // Toggle details
   const toggleDetails = (index) => {
-    setDetails((detailsActive) => {
-        const newDetails = [...detailsActive]; //if user add neww details 
+    setDetails((detailsOpen) => {
+        const newDetails = [...detailsOpen]; //if user added neww details 
         newDetails[index] = !newDetails[index]; // Toggle visibility
       return newDetails;
     });
   };
 
   // Edit Task
+  const editTask = ()=>{
+    setIsModalOpen(true); // Open the modal
+  }
 
   // Delete Task
   const deleteTask = (id) => {
@@ -28,33 +31,21 @@ export default function Tasks({data}) {
     setTasks((tasks) => tasks.filter((task) => task.id !== id ? true: false));
   };
 
-  // edit single Task
-  const editStep = ()=>{
-    setIsModalOpen(true); // Open the modal
-  }
-  // edit single Task
-  const deleteStep = (stepId, stepIndex) => {
-    setTasks((details) =>
-    details.map((step) => {
-        if (step.id === stepId) {
-          const newDetails = step.details.filter((_, index) => index !== stepIndex ? true: false);
-          return { ...step, details: newDetails };
-        }
-        return step;
-      })
-    );
-  };
-
   return (
     <section className='tasks'>
-      <h2>Tasks in Progress</h2>
+      <h2>
+        <Link to={`/${tasks}`}>Tasks in Progress</Link> 
+      </h2>
       {tasks.length > 0 ?
         <div className="task--container">
           {tasks.map((task, index) => (
             <div className='single--task' key={index}>
-              <div className='task--title' onClick={() => toggleDetails(index)}>
-                <Link to={`/${task.id}`}><h3>{task.title} </h3></Link>
-                <button className='btn' onClick={() => deleteTask(task.id)}>Delete</button>
+              <div className='task--title'>
+                <h3 onClick={() => toggleDetails(index)}>{task.title} </h3>
+                <span className='icons'>
+                    <button onClick={() => editTask(task.id)}><FaEdit/></button>
+                    <button onClick={() => deleteTask(task.id)}><FaTimes/></button>
+                  </span>
               </div>
               {/* Render details only if detailsVisible is true for the current task */}
               {details[index] && task.details?.map((step, index) => (
@@ -64,10 +55,6 @@ export default function Tasks({data}) {
                       {step.step} <br /> {step.date}
                     </li>
                   </ul>
-                  <span className='icons'>
-                    <FaEdit onClick={() => editStep(step.id, index)} />
-                    <FaTimes onClick={() => deleteStep(step.id, index)} />
-                  </span>
                 </div>
               ))}
               <p>Deadline to conclud this task: {task.day}</p>
