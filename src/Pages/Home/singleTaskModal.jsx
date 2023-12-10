@@ -1,95 +1,152 @@
 import { useState } from "react";
-import TaskDetails from './TaskDetails';
-import { FaTimes, FaEdit } from 'react-icons/fa';
+import { FaTimes } from 'react-icons/fa';
 
 export default function SingleTaskModal({ onClose, onUpdate, data, index }) {
   const { title, details, day } = data;
 
-  const [tasks, setTasks] = useState(details); // Initialize tasks state with details array
-  const [editMode, setEditMode] = useState(false);
-  const [updatedStep, setUpdatedStep] = useState("");
+  // Initialize tasks state with the entire task data
+  const [taskData, setTaskData] = useState({
+    title,
+    details: [...details], // Copy the details array
+    day,
+  });
 
-  const editStep = (stepIndex) => {
-    setEditMode(stepIndex);
-    setUpdatedStep(tasks[stepIndex].step); // Set the initial value for the updatedStep
-  };
+  const [editMode, setEditMode] = useState(true); // Initially set to edit mode
 
-  const saveStep = (stepIndex) => {
-    setTasks((prevDetails) => {
-      const newDetails = [...prevDetails];
-      newDetails[stepIndex].step = updatedStep;
-      return newDetails;
+  const deleteStep = (id, e) => {
+    e.preventDefault();
+    setTaskData((prevData) => {
+      const newData = { ...prevData };
+      newData.details = newData.details.filter((i) => i.id !== id);
+      return newData;
     });
-    setEditMode(false);
   };
 
-  const deleteStep = (stepIndex) => {
-    setTasks((prevDetails) => {
-      const newDetails = [...prevDetails];
-      newDetails.splice(stepIndex, 1);
-      return newDetails;
-    });
-    setEditMode(false);
-  };
-
-  const handleUpdateTask = () => {
-    console.log(data)
-    // Check if data.tasks is defined before accessing it
+  const saveTask = () => {
     if (data) {
-      // How I do not have a backend, we need this step to improvise a simulation with a JSON file
-      const updatedData = {
-        ...data,
-        tasks: data.details.map((step, i) => (i === index ? { title, details: tasks, day } : step)),
-      };
-      // 1. Send an update request to the backend
+      // Simulate an update request to the backend (replace with actual API call)
       fetch('../../data/tasks.json', {
-        method: 'PUT', // Use 'PUT' to simulate an update
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updatedData),
+        body: JSON.stringify({ taskData }),
       })
         .then(response => response.json())
         .then(data => console.log('Data updated:', data))
         .catch(error => console.error('Error updating data:', error));
-  
-      // 2. Update the view by triggering the onUpdate function in the parent component
-      onUpdate({ title, details: tasks, day });
-      // 3. Close the modal
+
+      onUpdate({ title: taskData.title, details: taskData.details, day: taskData.day });
       onClose();
     } else {
       console.error("data is undefined");
-      // You may want to handle this case accordingly, e.g., show an error message or return early
     }
-  };  
+  };
+
+  const toggleEditMode = (e) => {
+    e.preventDefault();
+    setEditMode(!editMode);
+  };
 
   return (
-    <div className='modal'>
+    <form className='modalForm'>
       <div className='single--task'>
         <div className='task--title'>
-          <h3>{title} </h3>
+          <label htmlFor="title">Task Title: </label>
+          {editMode ? (
+            // Edit mode: Display input field
+            <input
+              id="title"
+              name="title"
+              type="text"
+              placeholder={taskData.title}
+              value={taskData.title}
+              onChange={(e) => setTaskData((prevData) => ({ ...prevData, title: e.target.value }))}
+            />
+          ) : (
+            // Preview mode: Display plain text
+            <span>{taskData.title}</span>
+          )}
         </div>
-        {tasks && tasks.map((step, index) => (
-          <span className='icons' key={index}>
-            {editMode === index ? (
-              <input
-                type="text"
-                value={updatedStep}
-                onChange={(e) => setUpdatedStep(e.target.value)}
-              />
-            ) : (
-              <TaskDetails data={step} index={index} />
-            )}
-            <button onClick={() => editStep(index)}><FaEdit /></button>
-            <button onClick={() => deleteStep(index)}><FaTimes /></button>
-            {editMode === index && (
-              <button onClick={() => saveStep(index)}>Save</button>
-            )}
-          </span>
+        <p>Tipe: <br /> Break your task into small steps; this way, it is easier to get it done!</p>
+        {taskData.details.map((step, index) => (
+          <div className="step--container--btn" key={index}>
+            <div className="step--container">
+              <div className="step">
+                {/* Step Label and Input */}
+                <label htmlFor={`step${index}`}>Step {index + 1}: </label>
+                {editMode ? (
+                  // Edit mode: Display input field
+                  <input
+                    id={`step${index}`}
+                    name={`step${index}`}
+                    type="text"
+                    placeholder={step.step}
+                    value={taskData.details[index].step}
+                    onChange={(e) => {
+                      setTaskData((prevData) => {
+                        const newDetails = [...prevData.details];
+                        newDetails[index].step = e.target.value;
+                        return { ...prevData, details: newDetails };
+                      });
+                    }}
+                  />
+                ) : (
+                  // Preview mode: Display plain text
+                  <span>{taskData.details[index].step}</span>
+                )}
+              </div>
+              <div className="date">
+                {/* Date Label and Input */}
+                <label htmlFor={`date${index}`}>Estimate how long this step will take and set a day for it: </label>
+                {editMode ? (
+                  // Edit mode: Display input field
+                  <input
+                    id={`date${index}`}
+                    name={`date${index}`}
+                    type="text"
+                    placeholder={step.date}
+                    value={taskData.details[index].date}
+                    onChange={(e) => {
+                      setTaskData((prevData) => {
+                        const newDetails = [...prevData.details];
+                        newDetails[index].date = e.target.value;
+                        return { ...prevData, details: newDetails };
+                      });
+                    }}
+                  />
+                ) : (
+                  // Preview mode: Display plain text
+                  <span>{taskData.details[index].date}</span>
+                )}
+              </div>
+              {/* Delete Step Button */}
+              <button onClick={(e) => deleteStep(step.id, e)}><FaTimes /></button>
+            </div>
+            <div className='task--final--deadline'>
+              {/* Final Deadline Label and Input */}
+              <label htmlFor="deadline">Final deadline to conclude this task: </label>
+              {editMode ? (
+                // Edit mode: Display input field
+                <input
+                  id="deadline"
+                  name="deadline"
+                  type="text"
+                  placeholder={taskData.day}
+                  value={taskData.day}
+                  onChange={(e) => setTaskData((prevData) => ({ ...prevData, day: e.target.value }))}
+                />
+              ) : (
+                // Preview mode: Display plain text
+                <span>{taskData.day}</span>
+              )}
+            </div>
+          </div>
         ))}
-        <p>Deadline to conclude this task: {day}</p>
-        <button onClick={handleUpdateTask}>Update Task</button>
+        <button onClick={(e) => toggleEditMode(e)}>{editMode ? 'Preview' : 'Edit'}</button>
+        <button onClick={saveTask}>Save Task</button>
       </div>
-    </div>
+    </form>
   );
 }
+
