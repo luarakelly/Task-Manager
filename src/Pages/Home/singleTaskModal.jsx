@@ -4,27 +4,41 @@ import { FaTimes } from 'react-icons/fa';
 export default function SingleTaskModal({ onClose, onUpdate, data, index }) {
   const { title, details, day } = data;
 
-  // Initialize tasks state with the entire task data
+  // Initialize tasks state with the entire task data (GET, DELETE, PUT)
   const [taskData, setTaskData] = useState({
     title,
     details: [...details], // Copy the details array
     day,
   });
-
+  //(UPDATE)
+  const [newStep, setNewStep] = useState({
+    step: '',
+    date: '',
+  });
   const [editMode, setEditMode] = useState(true); // Initially set to edit mode
+
+  const addStep = () => {
+    setTaskData((prevData) => {
+      const newData = { ...prevData };
+      newData.details = [...newData.details, { id: Date.now(), ...newStep }];
+      return newData;
+    });
+    // Reset the newStep state after adding
+    setNewStep({
+      step: '',
+      date: '',
+    });
+  };
+  
 
   const deleteStep = (id, e) => {
     e.preventDefault();
-    setTaskData((prevData) => {
-      const newData = { ...prevData };
-      newData.details = newData.details.filter((i) => i.id !== id);
-      return newData;
-    });
+    setTaskData((prevData) => prevData.filter((item) => item.id !== id ? true: false));
   };
 
   const saveTask = () => {
     if (data) {
-      // Simulate an update request to the backend (replace with actual API call)
+      // Simulate an update request to the backend (replace with actual API call) ---> use useEffect hook
       fetch('../../data/tasks.json', {
         method: 'PUT',
         headers: {
@@ -61,14 +75,14 @@ export default function SingleTaskModal({ onClose, onUpdate, data, index }) {
               type="text"
               placeholder={taskData.title}
               value={taskData.title}
-              onChange={(e) => setTaskData((prevData) => ({ ...prevData, title: e.target.value }))}
+              onChange={(e) => setTaskData((prevData) => ({ title: e.target.value, ...prevData }))}
             />
           ) : (
             // Preview mode: Display plain text
             <span>{taskData.title}</span>
           )}
         </div>
-        <p>Tipe: <br /> Break your task into small steps; this way, it is easier to get it done!</p>
+        <p>Tye: <br /> Break your task into small steps; this way, it is easier to get it done!</p>
         {taskData.details.map((step, index) => (
           <div className="step--container--btn" key={index}>
             <div className="step--container">
@@ -143,6 +157,7 @@ export default function SingleTaskModal({ onClose, onUpdate, data, index }) {
             </div>
           </div>
         ))}
+        <button type="button" onClick={addStep}>Add Step</button>
         <button onClick={(e) => toggleEditMode(e)}>{editMode ? 'Preview' : 'Edit'}</button>
         <button onClick={saveTask}>Save Task</button>
       </div>

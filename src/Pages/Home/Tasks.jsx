@@ -3,6 +3,7 @@ import { FaTimes,  FaEdit } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import SingleTaskModal from './singleTaskModal';
 import TaskDetails from './TaskDetails';
+import AddTaskForm from './AddTaskForm';
 
 export default function Tasks({data}) {
   // manage the GET, DELETE and UpDate task fom the user end
@@ -13,6 +14,8 @@ export default function Tasks({data}) {
   const [isModalOpen, setIsModalOpen] = useState(false); 
   // state to store the selected task to show in the model
   const [selectedTask, setSelectedTask] = useState(undefined); 
+  // state to show or not the add form
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
 
   // Delete Task
   const deleteTask = (id) => {
@@ -20,7 +23,7 @@ export default function Tasks({data}) {
     setTasks((prevData) => prevData.filter((item) => item.id !== id ? true: false));
   };
 
-  //call API to update the detetion in the database
+  //call API to update the deletion in the database, use useEffect hook
 
   // Update Task
   const updateTask = (updatedTask, index) => {
@@ -46,8 +49,26 @@ export default function Tasks({data}) {
     setIsModalOpen(true); // Open the modal
   }
 
+  const createTask = () => {
+    setIsAddFormOpen(true)
+  }
+
+  const addTask = (newTask) => {
+    console.log(newTask)
+    setTasks((prevData) => {
+      return [...prevData, {id: Date.now(), ...newTask }] ;
+  });
+  };
+  
   return (
     <section className='tasks'>
+      <header className="header">
+      <button className="btn btn-outline" onClick={createTask}> Create a Task!</button>
+      <img src="./imgs/header/plan-make.jpg" alt="title" />
+      {isAddFormOpen && (
+        <AddTaskForm onAdd={(newTask) => addTask(newTask)}/>
+      )}
+      </header>
       <h2>
         <Link to={`/${tasks}`}>Task manager</Link> 
       </h2>
