@@ -1,15 +1,19 @@
 import './App.css';
 import React from 'react';
-import {BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import HomePage from "./Pages/Views/index";
+import {BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Sidebar from './Pages/Nav/Sidebar';
+import Home from './Pages/Home';
+import Tasks from './Pages/AllTasks/Tasks';
 
 function App() {
   return (
     <div className="app-container">
       <Router>
         <div>
+        <Sidebar/>
         <Routes>
-          <Route path='/' element={<HomePage/>}/>
+          <Route path='/'element={<Home />}/>
+          <Route path='/tasks'element={<Tasks />}/>
           <Route path='*' element={<div>404 Not Found</div>}/>
         </Routes>
         </div>
