@@ -7,7 +7,7 @@ import { IoSettings } from 'react-icons/io5';
 import { MdTask } from 'react-icons/md';
 import AddNewTask from './AddNewTask'
 
-export default function Sidebar() {
+export default function Sidebar({onSave}) {
   const [sidebarActive, setSidebarActive] = useState(false);
   const [addTaskActive, setAddTaskActive] = useState(false);
 
@@ -43,7 +43,7 @@ export default function Sidebar() {
         )}
       </div>
     </div>
-    <AddNewTask isOpen={addTaskActive} onClose={toggleAddTask}/>
+    <AddNewTask isOpen={addTaskActive} onClose={toggleAddTask} onSave={onSave}/>
     </>
   );
 }

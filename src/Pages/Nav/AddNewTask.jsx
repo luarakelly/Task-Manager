@@ -68,7 +68,8 @@ export default function AddNewTask({ isOpen, onClose, onSave }) {
         });
     };
     
-    const saveTask = () =>{
+    const saveTask = (event) =>{
+        event.preventDefault();
         // Call the onSave callback with the task data
         onSave(task);
     }
@@ -80,7 +81,7 @@ export default function AddNewTask({ isOpen, onClose, onSave }) {
                     <h1>Task</h1>
                     <button onClick={onClose}>X</button>
                 </div>
-                <form className="form">
+                <form className="form" onSubmit={saveTask}>
                     <label htmlFor="title">Title: </label>
                     <input id="title" name="title" value={task.title} onChange={inputHandler} type="text" />
 
@@ -93,7 +94,7 @@ export default function AddNewTask({ isOpen, onClose, onSave }) {
                             <input
                                 id={`description${index}`}
                                 name="description"
-                                value={task.step.description}
+                                value={step.description}
                                 onChange={(event) => inputHandler(event, index)}
                                 type="text"
                             />
@@ -103,7 +104,7 @@ export default function AddNewTask({ isOpen, onClose, onSave }) {
                             <input
                                 id={`startDate-${index}`}
                                 name="startDate"
-                                value={task.step.startDate}
+                                value={step.startDate}
                                 onChange={(event) => inputHandler(event, index)}
                                 type="date"
                             />
@@ -113,7 +114,7 @@ export default function AddNewTask({ isOpen, onClose, onSave }) {
                             <input
                                 id={`finishDate-${index}`}
                                 name="finishDate"
-                                value={task.step.finishDate}
+                                value={step.finishDate}
                                 onChange={(event) => inputHandler(event, index)}
                                 type="date"
                             />
@@ -164,7 +165,7 @@ export default function AddNewTask({ isOpen, onClose, onSave }) {
                         <input id="weeklyReview" name="weeklyReview" checked={task.weeklyReview} onChange={inputHandler} type="checkbox" />
                     </span>
                     <br />
-                    <button onClick={saveTask}>Save</button>
+                    <button type="submit" onClick={saveTask}>Save</button>
                 </form>
             </div>
         </div>
