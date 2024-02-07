@@ -22,7 +22,6 @@ export default function Sidebar({onSave}) {
     setAddTaskActive(!addTaskActive);
   };
 
-
   return (
     <>
       <div className={`sidebar ${sidebarActive ? 'active' : ''}`} onClick={toggleSideBar}>

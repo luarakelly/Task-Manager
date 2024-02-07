@@ -43,7 +43,7 @@ export default function AddNewTask({ isOpen, onClose, onSave }) {
             });
         }
     };
-
+    
     //Adds a new step to the step array when the "Add step" button is clicked.
     const AddStepHandler = () => {
         setTask({
@@ -165,7 +165,7 @@ export default function AddNewTask({ isOpen, onClose, onSave }) {
                         <input id="weeklyReview" name="weeklyReview" checked={task.weeklyReview} onChange={inputHandler} type="checkbox" />
                     </span>
                     <br />
-                    <button type="submit" onClick={saveTask}>Save</button>
+                    <button type='submit' onClick={saveTask}>Save</button>
                 </form>
             </div>
         </div>

@@ -19,7 +19,7 @@ function App() {
         <Sidebar onSave={addTask}/>
         <Routes>
           <Route path='/'element={<Home />}/>
-          <Route path='/tasks'element={<Tasks tasks={tasks}/>}/>
+          <Route path='/tasks'element={<Tasks data={tasks} onSave={addTask}/>}/>
           <Route path='*' element={<div>404 Not Found</div>}/>
         </Routes>
         </div>
@@ -29,3 +29,4 @@ function App() {
 };
 
 export default App;
+
