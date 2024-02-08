@@ -12,6 +12,11 @@ function App() {
     setTasks([...tasks, newTask]);
   };
 
+  //Delete function
+  const deleteTask = (index)=>{
+    setTasks(tasks.filter((task, i)=> i!==index));
+  }
+
   return (
     <div className="app-container">
       <Router>
@@ -19,7 +24,7 @@ function App() {
         <Sidebar onSave={addTask}/>
         <Routes>
           <Route path='/'element={<Home />}/>
-          <Route path='/tasks'element={<Tasks data={tasks} onSave={addTask}/>}/>
+          <Route path='/tasks'element={<Tasks data={tasks} onSave={addTask} onDelete={deleteTask}/>}/>
           <Route path='*' element={<div>404 Not Found</div>}/>
         </Routes>
         </div>

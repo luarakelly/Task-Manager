@@ -72,6 +72,29 @@ export default function AddNewTask({ isOpen, onClose, onSave }) {
         event.preventDefault();
         // Call the onSave callback with the task data
         onSave(task);
+        // Clear data
+        setTask({
+            title: '',
+            step: [
+                {
+                    description: '',
+                    startDate: new Date(),
+                    finishDate: new Date()
+                },
+            ],
+            weeklyRemainder: [],
+            dueDate: new Date(),
+            dueRmainder: new Date(),
+            weeklyReview: false,
+            note: '',
+        });
+    }
+    //delet function.
+    const deleteStep = (index)=>{
+        setTask({
+            ...task,
+            step: task.step.filter((step, i) => i !== index),
+        });
     }
 
     return (
@@ -119,8 +142,8 @@ export default function AddNewTask({ isOpen, onClose, onSave }) {
                                 type="date"
                             />
                             </div>
-                            {/* you still have to handle the delet step action */}
-                            <button>Delete</button>
+                            {/* delet btn */}
+                            <button type="button" onClick={() => deleteStep(index)}>Delete</button>
                         </div>
                     ))}
                     {/* Button to add new step */}
